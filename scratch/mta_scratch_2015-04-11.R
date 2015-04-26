@@ -17,6 +17,13 @@ ggsave("~/Desktop/test_googlemap.png")
 ggmap(get_map("new york", source = "stamen", maptype = "toner")) + geom_point(aes(x = longitude, y = latitude, size = daily_riders, fill = pct_7day), color = "black", pch = 21, data = metrocard)
 ggmap(get_map("new york", source = "stamen", maptype = "toner-lite")) + geom_point(aes(x = longitude, y = latitude, size = daily_riders, fill = pct_7day), color = "black", pch = 21, data = metrocard)
 
+ggmap(get_map("new york", source = "stamen", maptype = "toner-lite")) + geom_point(aes(x = longitude, y = latitude, fill = pct_households_poverty), color = "black", pch = 21, data = metrocard) + scale_fill_gradient(low = "green", high = "red")
+
+qplot(x = pct_households_poverty, y = pct_7day, data = metrocard) + geom_smooth(method = "lm")
+
+m1 <-lm(pct_7day ~ pct_households_poverty, data = metrocard)
+# Can we use census data to do double poverty.
+
 first_elements = function(x) {
   y <- strsplit(x, ",")
   sapply(y, "[", 1)
