@@ -3,7 +3,7 @@ library(magrittr)
 library(ggplot2)
 library(ggmap)
 
-metrocard <- read.csv("metrocard-usage.csv", as.is = TRUE)
+metrocard <- read.csv("rawdata/metrocard-usage.csv", as.is = TRUE)
 metrocard <- as.tbl(metrocard)
 
 metrocard
