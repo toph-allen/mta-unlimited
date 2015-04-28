@@ -15,4 +15,7 @@ metrocard %<>%
          daily_7day = daily_riders * pct_7day,
          daily_other = daily_riders * pct_other)
 
+# The one NA for Borough is actually in Queens--it's Mets - Willets Point on the 7.
+metrocard$borough[is.na(metrocard$borough)] <- "Queens"
+
 save(metrocard, file = "data/metrocard.RData")
