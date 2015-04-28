@@ -9,28 +9,16 @@ acs13_5yr <- read.csv("rawdata/ACS_13_5YR_B08101/ACS_13_5YR_B08101.csv", skip = 
 acs_transit <- acs13_5yr %>%
   select(fips = Id2,
          acs_total = Estimate..Total.,
-         use_transit = Estimate..Total....Public.transportation..excluding.taxicab..) %>%
-  mutate(fips = as.character(fips))
+         acs_use_transit = Estimate..Total....Public.transportation..excluding.taxicab..) %>%
+  mutate(fips = as.character(fips),
+         use_transit_pct = acs_use_transit / acs_total)
 
 rm(acs13_5yr)
 
 # Summarize totals by borough
 
-acs_boro <- nyc_census_tracts %>%
-  select(fips, borough) %>%
-  left_join(acs_transit) %>%
-  group_by(borough) %>%
-  summarize(boro_transit_5yr = sum(use_transit, na.rm = TRUE))
+acs_transit %<>%
+  inner_join(select(nyc_census_tracts, fips, census_pop = P0010001)) %>%
+  mutate(use_transit_est = use_transit_pct * census_pop)
 
-metrocard_boro <- metrocard %>%
-  group_by(borough) %>%
-  summarize(boro_transit_daily = sum(daily_riders, na.rm = TRUE))
-
-boro <- full_join(metrocard_boro, acs_boro)
-
-acs_nyc_transit <- acs_transit %>%
-  inner_join(select(nyc_census_tracts, fips, borough)) %>%
-  left_join(boro) %>%
-  mutate(transit_daily_estimate = use_transit * (boro_transit_daily / boro_transit_5yr))
-
-save(acs_nyc_transit, file = "data/acs_nyc_transit.RData")
+save(acs_transit, file = "data/acs_transit.RData")
